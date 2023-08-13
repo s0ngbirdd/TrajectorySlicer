@@ -16,7 +16,8 @@ namespace Joystick
         [Header("Player Movement")]
         [SerializeField] private float _moveSpeed = 10;
         [SerializeField] private float _borderMaxXPosition = 1.95f;
-        
+        [SerializeField] private float _borderMaxZPosition = 1.95f;
+
         private Finger _movementFinger;
         private Vector2 _movementAmount;
 
@@ -38,14 +39,20 @@ namespace Joystick
 
         private void Update()
         {
+            Vector3 verticalMove = Vector3.zero;
             Vector3 horizontalMove = Vector3.zero;
         
+            if (transform.position.z * Mathf.Sign(_movementAmount.y) < _borderMaxZPosition)
+            {
+                verticalMove = transform.forward * (_movementAmount.y * _moveSpeed * Time.deltaTime);
+            }
+            
             if (transform.position.x * Mathf.Sign(_movementAmount.x) < _borderMaxXPosition)
             {
                 horizontalMove = transform.right * (_movementAmount.x * _moveSpeed * Time.deltaTime);
             }
             
-            transform.Translate(horizontalMove);
+            transform.Translate(verticalMove + horizontalMove);
         }
 
         private void HandleFingerDown(Finger touchedFinger)
