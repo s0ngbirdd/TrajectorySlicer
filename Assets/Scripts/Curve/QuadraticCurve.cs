@@ -1,67 +1,71 @@
 using Joystick;
 using UnityEngine;
 
-[RequireComponent(typeof(LineRenderer))]
-public class QuadraticCurve : MonoBehaviour
+namespace Curve
 {
-    [SerializeField] private Transform _a;
-    [SerializeField] private Transform _b;
-    [SerializeField] private Transform _control;
+    [RequireComponent(typeof(LineRenderer))]
+    public class QuadraticCurve : MonoBehaviour
+    {
+        [SerializeField] private Transform _pointA;
+        [SerializeField] private Transform _pointB;
+        [SerializeField] private Transform _middlePoint;
+        [SerializeField] private int _curvePointNumber = 20;
     
-    private LineRenderer _lineRenderer;
-    private bool _showLine = true;
+        private LineRenderer _lineRenderer;
+        private bool _showLine = true;
 
-    private void Awake()
-    {
-        _lineRenderer = GetComponent<LineRenderer>();
-    }
-    
-    private void OnEnable()
-    {
-        PlayerTouchMovement.OnFingerUp += HideLine;
-    }
-
-    private void OnDisable()
-    {
-        PlayerTouchMovement.OnFingerUp -= HideLine;
-    }
-
-    public Vector3 Evaluate(float t)
-    {
-        Vector3 ac = Vector3.Lerp(_a.position, _control.position, t);
-        Vector3 cb = Vector3.Lerp(_control.position, _b.position, t);
-        return Vector3.Lerp(ac, cb, t);
-    }
-
-    private void Update()
-    {
-        if (_showLine)
+        private void Awake()
         {
-            _lineRenderer.positionCount = 20;
+            _lineRenderer = GetComponent<LineRenderer>();
+        }
+    
+        private void OnEnable()
+        {
+            PlayerTouchMovement.OnFingerUp += HideLine;
+        }
 
-            for (int i = 0; i < 20; i++)
+        private void OnDisable()
+        {
+            PlayerTouchMovement.OnFingerUp -= HideLine;
+        }
+
+        public Vector3 EvaluatePointPosition(float t)
+        {
+            Vector3 aToMiddle = Vector3.Lerp(_pointA.position, _middlePoint.position, t);
+            Vector3 middleToB = Vector3.Lerp(_middlePoint.position, _pointB.position, t);
+            return Vector3.Lerp(aToMiddle, middleToB, t);
+        }
+
+        private void Update()
+        {
+            if (_showLine)
             {
-                _lineRenderer.SetPosition(i, Evaluate(i / 20f));
+                _lineRenderer.positionCount = _curvePointNumber;
+
+                for (int i = 0; i < _curvePointNumber; i++)
+                {
+                    _lineRenderer.SetPosition(i, EvaluatePointPosition(i / (float)_curvePointNumber));
+                }
             }
         }
-    }
 
-    private void OnDrawGizmos()
-    {
-        if (_a == null || _b == null || _control == null)
+        private void OnDrawGizmos()
         {
-            return;
+            if (_pointA == null || _pointB == null || _middlePoint == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < _curvePointNumber; i++)
+            {
+                Gizmos.DrawWireSphere(EvaluatePointPosition(i / (float)_curvePointNumber), 0.1f);
+            }
         }
 
-        for (int i = 0; i < 20; i++)
+        private void HideLine()
         {
-            Gizmos.DrawWireSphere(Evaluate(i / 20f), 0.1f);
+            _lineRenderer.positionCount = 0;
+            _showLine = false;
         }
-    }
-
-    private void HideLine()
-    {
-        _lineRenderer.positionCount = 0;
-        _showLine = false;
     }
 }

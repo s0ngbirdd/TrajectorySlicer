@@ -14,9 +14,9 @@ namespace Joystick
         [SerializeField] private FloatingJoystick _joystick;
         
         [Header("Player Movement")]
-        [SerializeField] private float _moveSpeed = 10;
-        [SerializeField] private float _borderMaxXPosition = 1.95f;
-        [SerializeField] private float _borderMaxZPosition = 1.95f;
+        [SerializeField] private float _moveSpeed = 7;
+        [SerializeField] private float _borderMaxXPosition = 5;
+        [SerializeField] private float _borderMaxZPosition = 4;
 
         private Finger _movementFinger;
         private Vector2 _movementAmount;

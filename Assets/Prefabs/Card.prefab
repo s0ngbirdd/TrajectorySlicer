@@ -239,7 +239,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b72176bc6edc42a499a8f5a7566cba36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _curve: {fileID: 0}
-  _speed: 1
-  _child: {fileID: 6006500363459522305}
-  _poofParticle: {fileID: 395031058680739610, guid: b2f0b8902a31c8a46a1c4bb24ed9ea36, type: 3}
+  _quadraticCurve: {fileID: 0}
+  _movementSpeed: 1
+  _bodyTransform: {fileID: 6006500363459522305}
